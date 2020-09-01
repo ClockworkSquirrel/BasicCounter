@@ -1,29 +1,33 @@
--- polyfills
-table.unpack = unpack -- luacheck: ignore
+--[[
+	Loads our library and all of its dependencies, then runs tests using TestEZ.
+]]
 
--- borrowed from Roact
-
+-- If you add any dependencies, add them to this table so they'll be loaded!
 local LOAD_MODULES = {
-	Library = "src",
-	TestEZ = "modules/testez/src",
+	{"src", "BasicCounter"},
+	{"modules/testez/lib", "TestEZ"},
 }
 
+-- This makes sure we can load Lemur and other libraries that depend on init.lua
 package.path = package.path .. ";?/init.lua"
+
+-- If this fails, make sure you've cloned all Git submodules of this repo!
 local lemur = require("modules.lemur")
+
+-- Create a virtual Roblox tree
 local habitat = lemur.Habitat.new()
 
-local Root = lemur.Instance.new("Folder")
-Root.Name = "Root"
+-- We'll put all of our library code and dependencies here
+local Root = habitat.game:GetService("ReplicatedStorage")
 
-for name, path in pairs(LOAD_MODULES) do
-	local container = habitat:loadFromFs(path)
-	container.Name = name
+-- Load all of the modules specified above
+for _, module in ipairs(LOAD_MODULES) do
+	local container = habitat:loadFromFs(module[1])
+	container.Name = module[2]
 	container.Parent = Root
 end
 
-local TestEZ = habitat:require(Root.TestEZ)
-local results = TestEZ.TestBootstrap:run({ Root.Library }, TestEZ.Reporters.TextReporter)
+local runTests = habitat:loadFromFs("tests/RunTests.server.lua")
 
-if results.failureCount > 0 then
-	os.exit(1)
-end
+-- When Lemur implements a proper scheduling interface, we'll use that instead.
+habitat:require(runTests)
