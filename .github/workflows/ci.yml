@@ -32,8 +32,8 @@ jobs:
         luarocks install luacheck
     - name: Test
       run: |
-        lua -lluacov src/init.spec.lua
-        luacheck src benchmarks examples
+        lua -lluacov tests/RunTestsLemur.lua
+        luacheck src
         luacov -r lcov
     - name: Report to Coveralls
       uses: coverallsapp/github-action@v1.0.1
