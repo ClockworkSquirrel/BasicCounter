@@ -1,0 +1,22 @@
+{
+  "name": "BasicCounter",
+  "tree": {
+    "$className": "DataModel",
+
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+
+      "BasicCounter": {
+        "$path": "src"
+      },
+
+      "TestEZ": {
+        "$path": "modules/testez/src"
+      },
+
+      "Testing": {
+        "$path": "tests"
+      }
+    }
+  }
+}
