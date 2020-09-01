@@ -109,7 +109,7 @@ return function()
             local Fired = 0
 
             Counter.Changed:Connect(function()
-                Fired += 1
+                Fired = Fired + 1
             end)
 
             Counter:RawSet(10)
